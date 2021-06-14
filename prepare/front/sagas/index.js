@@ -1,90 +1,99 @@
-import { all, call, fork, put, takeLatest, throttle, delay } from 'redux-saga/effects';
+import { all, fork, takeLatest } from '@redux-saga/core/effects';
+import axios from 'axios';
 
-function loginAPI() {
-    return axios.post('api/login');
+function loginAPI(data) {
+    return axios.post('api/login', data);
 }
 
-function login() {
+function* login(action) {
     try {
-        yield delay(1000);
-        //call: 동기함수 호출, fork: 비동기 함수 호출
-        //const result = yield call(loginAPI, action.data);
+        //fork를 사용하면 비동기 처리 결과값 상관없이 쭉 실행
+        //call을 사용하면  결과값 받아와서 처리 진행
+        
+        //예시
+        /*
+        axios.post('api/login ').then(
+            () => {
+                    yield put({
+                        type: 'LOG_IN_SUCCEED',
+                        data: result.data,
+                    })
+                }
+            )
+        */
+        const result = yield call(loginAPI, action.data);
         yield put({
-            type: 'LOG_IN_SUCCESS',
-            data: result.data,
+            type: 'LOG_IN_SUCCEED',
+            data: result.data
         });
-    }
-    catch(err) {
+    } catch (err) {
         yield put({
             type: 'LOG_IN_FAILURE',
-            data: err.response.data,
-        });
+            data: err.result.data,
+        })
     }
 }
 
 function logoutAPI() {
-    return axios.post('api/login');
+    return axios.post('api/post');
 }
-function logout() {
-    try {
-        yield delay(1000);
 
-        //call: 동기함수 호출, fork: 비동기 함수 호출
-        //const result = yield call(loginAPI);
+function* logout() {
+    try {
+        const result = yield fork(loginAPI);
         yield put({
-            type: 'LOG_OUT_SUCCESS',
-            data: result.data,
+            type: 'ADD_POST_SUCCEED',
+            data: result.data
         });
-    }
-    catch(err) {
+    } catch (err) {
         yield put({
-            type: 'LOG_OUT_FAILURE',
-            data: err.response.data,
-        });
+            type: 'ADD_POST_FAILURE',
+            data: err.result.data,
+        })
     }
 }
+
 
 function addPostAPI(data) {
-    return axios.post('api/login', data);
+    return axios.post('api/post', data);
 }
+
 function addPost(action) {
     try {
-        yield delay(1000);
-        //call: 동기함수 호출, fork: 비동기 함수 호출
-        //const result = yield call(addPostAPI, action.data);
+        const result = yield fork(loginAPI, action.data);
         yield put({
-            type: 'ADD_POST__SUCCESS',
-            data: result.data,
+            type: 'ADD_POST_SUCCEED',
+            data: result.data
         });
-    }
-    catch(err) {
+    } catch (err) {
         yield put({
-            type: 'ADD_POST__FAILURE',
-            data: err.response.data,
-        });
+            type: 'ADD_POST_FAILURE',
+            data: err.result.data,
+        })
     }
 }
-//takeEvery: 응답에 상관없이 트랜젝션 처리도중에도 계속 받음
-//takeLatest : 트랜젝션 처리중 요청은 그대로 되고, 응답은 취소 됨
-function watchLogin() {
+
+
+//takeEvery는 while 돌리는것처럼 매번 실행
+//takeLatest는 짧은시간내 여러번 이벤트 발생해도 맨 마지막것만 실행
+//takeLeading 짧은시간에 여러번의 이벤트시 첫번째것 실행
+
+function* watchLogin() {
     yield takeLatest('LOG_IN_REQUEST', login);
 }
 
-function* watchLogout() {
+function* watchLogOut() {
     yield takeLatest('LOG_OUT_REQUEST', logout);
 }
 
 function* watchAddPost() {
-    yield takeLatest('ADD_POST_REQUEST', addPost);
-
-    //아래와 같이 사용하면 여러번 이벤트 발생해도 2초내에 1번만 실행 가능하게 할 수 있음
-    //yield throttle('ADD_POST_REQUEST', addPost, 2000);
+    yield takeLatest('ADD_POST_REQUEST');
 }
 
 export default function* rootSaga() {
     yield all([
         fork(watchLogin),
-        fork(watchLogout),
+        fork(watchLogOut),
         fork(watchAddPost),
-    ])
+    ]);
 }
