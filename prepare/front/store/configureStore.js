@@ -3,7 +3,7 @@ import { compose, createStore, applyMiddleware } from 'redux';
 import reducer from '../reducers';
 import {composeWithDevTools } from 'redux-devtools-extension';
 import createSagaMiddleware from 'redux-saga';
-
+import rootSaga from '../sagas';
 
 const loggerMiddleware = ({ dispatch, getState }) => (next) => (action) => {
     console.log(action);
@@ -29,7 +29,8 @@ const wrapper = createWrapper(configureStore, {
 export default wrapper;
 
 /*
-리액트 SAGA란 애플리케이션에서 일어나는 side effect(데이터를 불러오는 비동기 처리나 브라우저 캐쉬에 접근하는등)등을
+리액트 SAGA란?
+애플리케이션에서 일어나는 side effect(데이터를 불러오는 비동기 처리나 브라우저 캐쉬에 접근하는등)등을
 쉽게 관리하여 효과적인 실행, 손쉬운 테스트, 에러 핸들링을 쉽게 해줌
 
 https://uzihoon.com/post/181be130-63a7-11ea-a51b-d348fee141c4
