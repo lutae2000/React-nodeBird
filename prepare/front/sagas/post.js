@@ -1,13 +1,17 @@
 import axios from 'axios';
 
-import { delay, put, takeLatest, all, fork } from '@redux-saga/core/effects';
-
+import { all, delay, fork, put, takeLatest, throttle } from 'redux-saga/effects';
+import {
+    ADD_POST_FAILURE,
+    ADD_POST_REQUEST,
+    ADD_POST_SUCCESS,
+} from '../reducers/post';
 
 function* addPost(action) {
     try {
         //const result = yield call(loginAPI, action.data);
         yield put({
-            type: ADD_POST_SUCCEED,
+            type: ADD_POST_SUCCESS,
             data: result.data
         });
     } catch (err) {
@@ -30,7 +34,7 @@ function addPostAPI(data) {
 
 
 function* watchAddPost() {
-    yield takeLatest('ADD_POST_REQUEST');
+    yield takeLatest(ADD_POST_REQUEST, addPost);
 }
 
 

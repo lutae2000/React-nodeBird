@@ -46,7 +46,6 @@ const PostImages = ({ images }) => {
                 role = "presentation"
                 style={{display: 'inline-block', width:'50%', textAlign: 'center', verticalAlign:'middle'}}
                 onClick={onZoom}
-                
             >
                 <PlusOutlined />
                 <br />

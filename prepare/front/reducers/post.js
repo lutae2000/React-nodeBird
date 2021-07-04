@@ -1,3 +1,9 @@
+
+
+export const ADD_POST_REQUEST = 'ADD_POST_REQUEST';
+export const ADD_POST_SUCCESS = 'ADD_POST_SUCCESS';
+export const ADD_POST_FAILURE = 'ADD_POST_FAILURE';
+
 export const initialState = {
   mainPosts: [{
     id: 1,
@@ -49,12 +55,15 @@ const dummyPost = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case 'ADD_POST': {
+    case ADD_POST_REQUEST: {
       return {
         ...state,
         mainPosts: [dummyPost, ...state.mainPosts],
         postAdded: true,
       };
+    }
+    case ADD_POST_SUCCESS: {
+      
     }
     default: {
       return {
@@ -63,3 +72,4 @@ export default (state = initialState, action) => {
     }
   }
 };
+
