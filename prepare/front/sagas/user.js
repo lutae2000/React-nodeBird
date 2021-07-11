@@ -61,7 +61,7 @@ function* login(action) {
             //const result = yield call(loginAPI, action.data);
         yield put({
             type: LOG_IN_SUCCESS,
-            data: action.data
+            data: action.data,
         });
     } catch (err) {
         yield put({

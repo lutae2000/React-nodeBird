@@ -1,6 +1,6 @@
 
 export const initialState = {
-  loginLoading: false,
+  logInLoading: false,
   loginDone: false,
   loginError: null,
   
@@ -34,32 +34,28 @@ export const UNFOLLOW_REQUEST = 'UNFOLLOW_REQUEST';
 export const UNFOLLOW_SUCCESS = 'UNFOLLOW_SUCCESS';
 export const UNFOLLOW_FAILURE = 'UNFOLLOW_FAILURE';
 
-export const loginRequestAction = (data) => {
-    return {
+export const loginRequestAction = (data) => ({
       type: LOG_IN_REQUEST,
       data,
-    }
-  };
+  });
 
-export const logoutRequestAction = () => {
-  return {
+export const logoutRequestAction = () => ({
       type: LOG_OUT_REQUEST,
-  }  
-};
+});
 
 const dummyUser = (data) => ({
   ...data,
   nickname: '제로초',
   id: 1,
-  Posts: [{id:1}],
-})
+  Posts: [{ id: 1 }],
+});
 
 const reducer  = (state = initialState, action) => {
     switch(action.type){
       case LOG_IN_REQUEST:
-        return{
+        return {
           ...state,
-          loginLoading: true,
+          logInLoading: true,
           loginError: null,
           loginDone: false,
         };
@@ -67,7 +63,7 @@ const reducer  = (state = initialState, action) => {
       case LOG_IN_SUCCESS:
         return{
             ...state,
-            loginLoading: false,
+            logInLoading: false,
             loginDone: true,
             me: dummyUser(action.data),
         };
@@ -75,10 +71,11 @@ const reducer  = (state = initialState, action) => {
       case LOG_IN_FAILURE:
         return{
             ...state,
-            loginLoading: false,
+            logInLoading: false,
             loginError: action.error,
             me: action.data,
         };
+
       case LOG_OUT_REQUEST:
         return{
           ...state,
@@ -86,19 +83,22 @@ const reducer  = (state = initialState, action) => {
           logoutError: null,
           logoutDone: false,
         }
+
       case LOG_OUT_SUCCESS:
         return{
           ...state,
           logoutLoading: false,
           logoutDone: true,
+          me: null,
         }
-  
+
       case LOG_OUT_FAILURE:
         return{
           ...state,
           logoutLoading: false,
           logoutError: action.error,
         }
+
       default:
         return {
           ...state,
